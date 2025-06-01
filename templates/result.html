@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.5rem 1rem;
+            background-color: #f0f0f0;
+            text-decoration: none;
+            color: #333;
+            border-radius: 4px;
+        }
+        .back-button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Prediction Result</h2>
+    <p><strong>Predicted Class:</strong> {{ result }}</p>
+    <p><strong>Model Confidence:</strong> {{ confidence }}</p>
+    <p><strong>User Expected People:</strong> {{ expected }}</p>
+
+    <h3>Probability Breakdown</h3>
+    <canvas id="probChart"></canvas>
+    <script>
+        const ctx = document.getElementById('probChart').getContext('2d');
+        const generateColors = (count) => {
+            const baseColors = ['#4caf50', '#2196f3', '#ff9800', '#f44336', '#9c27b0', '#607d8b'];
+            return Array.from({length: count}, (_, i) => baseColors[i % baseColors.length]);
+        };
+        
+        const labels = {{ class_probs.keys()|list|tojson|safe }};
+        const chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: {{ class_probs.values()|list|tojson|safe }},
+                    backgroundColor: generateColors(labels.length),
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Predicted Class Distribution'
+                    }
+                }
+            }
+        });
+    </script>
+    <a href="/" class="back-button">Back to Form</a>
+</body>
+</html>

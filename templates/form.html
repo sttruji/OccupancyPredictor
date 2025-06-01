@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Occupancy Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0 12px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Enter Household and Utility Data</h2>
+    <form action="/predict" method="post">
+        {% for field in core_inputs %}
+            <label>{{ labels[field] }}:</label><br>
+            <input type="number" step="any" name="{{ field }}"><br>
+        {% endfor %}
+
+        <label>State:</label><br>
+        <select name="state">
+            {% for st in state_options %}
+                <option value="{{ st }}">{{ st }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Climate Zone:</label><br>
+        <select name="climate">
+            {% for cz in climate_options %}
+                <option value="{{ cz }}">{{ cz }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>IECC Climate Code:</label><br>
+        <select name="iecc">
+            {% for ic in iecc_options %}
+                <option value="{{ ic }}">{{ ic }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Expected Number of Occupants:</label><br>
+        <input type="text" name="expected_people" required><br><br>
+
+        <input type="submit" value="Predict">
+    </form>
+</body>
+</html>
